@@ -3,10 +3,12 @@ import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import notesRoutes from "./routes/notes";
 import createHttpError, { isHttpError } from "http-errors";
+var cors = require('cors')
 
 const app = express();
 
 app.use(morgan("dev"));
+app.use(cors());
 app.use(express.json());
 
 app.use("/api/notes", notesRoutes);
