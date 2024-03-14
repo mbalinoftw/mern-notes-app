@@ -1,5 +1,5 @@
 import { Container } from "@chakra-ui/react";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 interface ContainerProps {
   children: ReactNode;
