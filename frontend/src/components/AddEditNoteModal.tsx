@@ -18,14 +18,14 @@ import { Note } from "../models/note";
 import { useForm } from "react-hook-form";
 import { NoteInput, createNote, updateNote } from "../network/notes_api";
 
-interface CreateNoteModalProps {
+interface AddEditNoteModalProps {
   noteToEdit?: Note;
   isOpen: boolean;
   onClose(): void;
   onNoteSaved: (note: Note) => void;
 }
 
-export default function CreateNoteModal({ noteToEdit, isOpen, onClose, onNoteSaved }: CreateNoteModalProps) {
+export default function AddEditNoteModal({ noteToEdit, isOpen, onClose, onNoteSaved }: AddEditNoteModalProps) {
   const {
     register,
     handleSubmit,

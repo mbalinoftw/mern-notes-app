@@ -4,7 +4,7 @@ import PageLayout from "./components/PageLayout";
 import Note from "./components/Note";
 import { Button, Grid, useDisclosure } from "@chakra-ui/react";
 import { deleteNote, fetchNotes } from "./network/notes_api";
-import CreateNoteModal from "./components/CreateNoteModal";
+import AddEditNoteModal from "./components/AddEditNoteModal";
 
 export default function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
@@ -46,7 +46,7 @@ export default function App() {
         ))}
       </Grid>
       {isOpen && (
-        <CreateNoteModal
+        <AddEditNoteModal
           isOpen={isOpen}
           onClose={onClose}
           onNoteSaved={(newNote) => {
@@ -56,7 +56,7 @@ export default function App() {
         />
       )}
       {noteToEdit && (
-        <CreateNoteModal
+        <AddEditNoteModal
           noteToEdit={noteToEdit}
           isOpen={isOpen}
           onClose={onClose}
