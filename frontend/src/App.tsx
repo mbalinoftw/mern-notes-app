@@ -2,23 +2,30 @@ import { useState, useEffect } from "react";
 import { Note as NoteModel } from "./models/note";
 import PageLayout from "./components/PageLayout";
 import Note from "./components/Note";
-import { Button, Grid, useDisclosure } from "@chakra-ui/react";
+import { Button, Grid, Text, useDisclosure } from "@chakra-ui/react";
 import { deleteNote, fetchNotes } from "./network/notes_api";
 import AddEditNoteModal from "./components/AddEditNoteModal";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 export default function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const loadNotes = async () => {
+      setNotesLoading(true);
       try {
         const data = await fetchNotes();
+        setShowNotesLoadingError(false);
         setNotes(data);
       } catch (error) {
         console.error(error);
-        alert(error);
+        setShowNotesLoadingError(true);
+      } finally {
+        setNotesLoading(false);
       }
     };
     loadNotes();
@@ -34,17 +41,26 @@ export default function App() {
     }
   }
 
+  const renderNotesGrid = (
+    <Grid gridTemplateColumns={{ sm: "repeat(2,1fr)", lg: "repeat(3,1fr)" }} gap={4}>
+      {notes.map((note) => (
+        <Note note={note} key={note._id} onDelete={handleDeleteNote} onEdit={setNoteToEdit} onOpen={onOpen} />
+      ))}
+    </Grid>
+  );
+
   return (
     <PageLayout>
-      <Button onClick={onOpen} mx="auto" display="block">
+      <Button mb={6} onClick={onOpen} mx="auto" display="block">
         Add new note
       </Button>
+      {notesLoading && <LoadingSpinner />}
+      {showNotesLoadingError && <Text>Something went wrong. Please refresh the page.</Text>}
 
-      <Grid my={4} gridTemplateColumns={{ sm: "repeat(2,1fr)", lg: "repeat(3,1fr)" }} gap={4}>
-        {notes.map((note) => (
-          <Note note={note} key={note._id} onDelete={handleDeleteNote} onEdit={setNoteToEdit} onOpen={onOpen} />
-        ))}
-      </Grid>
+      {!notesLoading && !showNotesLoadingError && (
+        <>{notes.length > 0 ? renderNotesGrid : <Text fontSize="2xl" align="center">You don't have any notes yet.</Text>}</>
+      )}
+
       {isOpen && (
         <AddEditNoteModal
           isOpen={isOpen}
