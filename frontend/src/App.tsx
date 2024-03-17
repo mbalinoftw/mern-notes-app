@@ -42,7 +42,7 @@ export default function App() {
 
       <Grid my={4} gridTemplateColumns={{ sm: "repeat(2,1fr)", lg: "repeat(3,1fr)" }} gap={4}>
         {notes.map((note) => (
-          <Note note={note} key={note._id} onDelete={handleDeleteNote} onEdit={setNoteToEdit} />
+          <Note note={note} key={note._id} onDelete={handleDeleteNote} onEdit={setNoteToEdit} onOpen={onOpen} />
         ))}
       </Grid>
       {isOpen && (
@@ -57,13 +57,15 @@ export default function App() {
       )}
       {noteToEdit && (
         <CreateNoteModal
-        isOpen={isOpen}
-        onClose={onClose}
-        onNoteSaved={(newNote) => {
-          setNotes([...notes, newNote]);
-          onClose();
-        }}
-      />
+          noteToEdit={noteToEdit}
+          isOpen={isOpen}
+          onClose={onClose}
+          onNoteSaved={(updatedNote) => {
+            setNotes(notes.map((existingNote) => (existingNote._id === updatedNote._id ? updatedNote : existingNote)));
+            setNoteToEdit(null);
+            onClose();
+          }}
+        />
       )}
     </PageLayout>
   );

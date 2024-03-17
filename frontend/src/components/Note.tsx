@@ -26,9 +26,10 @@ interface NoteProps {
   note: NoteModel;
   onEdit: (note: NoteModel) => void;
   onDelete: (note: NoteModel) => void;
+  onOpen(): void;
 }
 
-export default function Note({ note, onEdit, onDelete }: NoteProps) {
+export default function Note({ note, onEdit, onDelete, onOpen }: NoteProps) {
   const { title, text, createdAt, updatedAt } = note;
   const { isOpen: deleteWarningIsOpen, onOpen: openDeleteWarning, onClose: closeDeleteWarning } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement>(null); 
@@ -67,6 +68,7 @@ export default function Note({ note, onEdit, onDelete }: NoteProps) {
                 icon={<FaRegEdit />}
                 onClick={() => {
                   onEdit(note);
+                  onOpen();
                 }}
               />
               <IconButton isRound aria-label="Delete note" icon={<FaRegTrashCan />} onClick={openDeleteWarning} />

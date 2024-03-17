@@ -16,29 +16,40 @@ import {
 } from "@chakra-ui/react";
 import { Note } from "../models/note";
 import { useForm } from "react-hook-form";
-import { NoteInput, createNote } from "../network/notes_api";
+import { NoteInput, createNote, updateNote } from "../network/notes_api";
 
 interface CreateNoteModalProps {
+  noteToEdit?: Note;
   isOpen: boolean;
   onClose(): void;
   onNoteSaved: (note: Note) => void;
 }
 
-export default function CreateNoteModal({ isOpen, onClose, onNoteSaved }: CreateNoteModalProps) {
+export default function CreateNoteModal({ noteToEdit, isOpen, onClose, onNoteSaved }: CreateNoteModalProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<NoteInput>();
+  } = useForm<NoteInput>({
+    defaultValues: {
+      title: noteToEdit?.title || "",
+      text: noteToEdit?.text || "",
+    },
+  });
 
   async function onSubmit(input: NoteInput) {
     try {
-      const noteResponse = await createNote(input);
+      let noteResponse: Note;
+      if (noteToEdit) {
+          noteResponse = await updateNote(noteToEdit._id, input);
+      } else {
+          noteResponse = await createNote(input);
+      }
       onNoteSaved(noteResponse);
-    } catch (error) {
+  } catch (error) {
       console.error(error);
       alert(error);
-    }
+  }
   }
 
   return (
