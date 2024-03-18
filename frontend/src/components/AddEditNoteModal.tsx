@@ -17,15 +17,23 @@ import {
 import { Note } from "../models/note";
 import { useForm } from "react-hook-form";
 import { NoteInput, createNote, updateNote } from "../network/notes_api";
+import { useEffect } from "react";
 
 interface AddEditNoteModalProps {
-  noteToEdit?: Note;
+  noteToEdit?: Note | null;
+  setNoteToEdit?: ((note: Note | null) => void) | undefined;
   isOpen: boolean;
   onClose(): void;
   onNoteSaved: (note: Note) => void;
 }
 
-export default function AddEditNoteModal({ noteToEdit, isOpen, onClose, onNoteSaved }: AddEditNoteModalProps) {
+export default function AddEditNoteModal({
+  noteToEdit,
+  setNoteToEdit,
+  isOpen,
+  onClose,
+  onNoteSaved,
+}: AddEditNoteModalProps) {
   const {
     register,
     handleSubmit,
@@ -41,22 +49,22 @@ export default function AddEditNoteModal({ noteToEdit, isOpen, onClose, onNoteSa
     try {
       let noteResponse: Note;
       if (noteToEdit) {
-          noteResponse = await updateNote(noteToEdit._id, input);
+        noteResponse = await updateNote(noteToEdit._id, input);
       } else {
-          noteResponse = await createNote(input);
+        noteResponse = await createNote(input);
       }
       onNoteSaved(noteResponse);
-  } catch (error) {
+    } catch (error) {
       console.error(error);
       alert(error);
-  }
+    }
   }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add note</ModalHeader>
+        <ModalHeader>{noteToEdit ? "Edit note" : "Add note"}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -73,7 +81,14 @@ export default function AddEditNoteModal({ noteToEdit, isOpen, onClose, onNoteSa
         </ModalBody>
         <ModalFooter>
           <ButtonGroup spacing={4}>
-            <Button variant="ghost" onClick={onClose}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (setNoteToEdit && noteToEdit) {
+                  setNoteToEdit(null);
+                }
+                onClose();
+              }}>
               Cancel
             </Button>
             <Button colorScheme="blue" mr={3} type="submit" disabled={isSubmitting} onClick={handleSubmit(onSubmit)}>

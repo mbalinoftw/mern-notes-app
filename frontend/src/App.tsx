@@ -51,14 +51,29 @@ export default function App() {
 
   return (
     <PageLayout>
-      <Button mb={6} onClick={onOpen} mx="auto" display="block">
+      <Button
+        mb={6}
+        onClick={() => {
+          setNoteToEdit(null);
+          onOpen();
+        }}
+        mx="auto"
+        display="block">
         Add new note
       </Button>
       {notesLoading && <LoadingSpinner />}
       {showNotesLoadingError && <Text>Something went wrong. Please refresh the page.</Text>}
 
       {!notesLoading && !showNotesLoadingError && (
-        <>{notes.length > 0 ? renderNotesGrid : <Text fontSize="2xl" align="center">You don't have any notes yet.</Text>}</>
+        <>
+          {notes.length > 0 ? (
+            renderNotesGrid
+          ) : (
+            <Text fontSize="2xl" align="center">
+              You don't have any notes yet.
+            </Text>
+          )}
+        </>
       )}
 
       {isOpen && (
@@ -71,9 +86,11 @@ export default function App() {
           }}
         />
       )}
+
       {noteToEdit && (
         <AddEditNoteModal
           noteToEdit={noteToEdit}
+          setNoteToEdit={setNoteToEdit}
           isOpen={isOpen}
           onClose={onClose}
           onNoteSaved={(updatedNote) => {
