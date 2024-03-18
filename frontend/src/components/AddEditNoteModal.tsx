@@ -17,7 +17,6 @@ import {
 import { Note } from "../models/note";
 import { useForm } from "react-hook-form";
 import { NoteInput, createNote, updateNote } from "../network/notes_api";
-import { useEffect } from "react";
 
 interface AddEditNoteModalProps {
   noteToEdit?: Note | null;
