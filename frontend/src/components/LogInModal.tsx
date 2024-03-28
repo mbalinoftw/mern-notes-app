@@ -30,7 +30,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccesful }: LoginM
   async function onSubmit(credentials: LoginCredentials) {
     try {
       const user = await login(credentials);
-      onLoginSuccesful(user)
+      onLoginSuccesful(user);
     } catch (error) {
       console.error(error);
     }
@@ -42,8 +42,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccesful }: LoginM
       <ModalContent>
         <ModalHeader>Sign up</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalBody>
             <TextInputField
               type="text"
               name="username"
@@ -53,25 +53,17 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccesful }: LoginM
               error={errors.username}
             />
             <PasswordInputField
-              type="text"
-              name="password"
-              label="Password"
               register={register}
               registerOptions={{ required: "Required" }}
               error={errors.password}
             />
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            w="full"
-            colorScheme="blue"
-            type="submit"
-            disabled={isSubmitting}
-            onClick={handleSubmit(onSubmit)}>
-            Log in
-          </Button>
-        </ModalFooter>
+          </ModalBody>
+          <ModalFooter>
+            <Button w="full" colorScheme="blue" type="submit" disabled={isSubmitting} onClick={handleSubmit(onSubmit)}>
+              Log in
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );

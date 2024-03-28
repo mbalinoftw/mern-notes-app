@@ -9,11 +9,9 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
-import { HiOutlineEyeOff, HiOutlineEye } from "react-icons/hi";
+import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
 
 interface PasswordInputFieldProps {
-  name: string;
-  label: string;
   placeholder?: string;
   register: UseFormRegister<any>;
   registerOptions?: RegisterOptions;
@@ -21,15 +19,7 @@ interface PasswordInputFieldProps {
   [x: string]: any;
 }
 
-export default function PasswordInputField({
-  name,
-  label,
-  placeholder,
-  register,
-  registerOptions,
-  error,
-  ...props
-}: PasswordInputFieldProps) {
+export default function PasswordInputField({ register, registerOptions, error, ...props }: PasswordInputFieldProps) {
   const [show, setShow] = useState(false);
   const handleClickShowPassword = () => setShow(!show);
 
@@ -37,11 +27,7 @@ export default function PasswordInputField({
     <FormControl isInvalid={!!error}>
       <FormLabel>Password</FormLabel>
       <InputGroup>
-        <Input
-          type={show ? "text" : "password"}
-          {...register("password", { required: "Password is required" })}
-          {...props}
-        />
+        <Input type={show ? "text" : "password"} {...register("password", registerOptions)} {...props} />
         <InputRightElement>
           <IconButton
             aria-label="show password"

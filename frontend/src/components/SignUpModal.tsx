@@ -1,6 +1,3 @@
-import { User } from "../models/user";
-import { useForm } from "react-hook-form";
-import { SignUpCredentials, signUp } from "../network/notes_api";
 import {
   Button,
   Modal,
@@ -11,8 +8,11 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import TextInputField from "./TextInputField";
+import { useForm } from "react-hook-form";
+import { User } from "../models/user";
+import { SignUpCredentials, signUp } from "../network/notes_api";
 import PasswordInputField from "./PasswordInputField";
+import TextInputField from "./TextInputField";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -31,6 +31,7 @@ export default function SignUpModal({ isOpen, onClose, onSignUpSuccesful }: Sign
     try {
       const newUser = await signUp(credentials);
       onSignUpSuccesful(newUser);
+      onClose();
     } catch (error) {
       console.error(error);
       alert(error);
@@ -43,14 +44,14 @@ export default function SignUpModal({ isOpen, onClose, onSignUpSuccesful }: Sign
       <ModalContent>
         <ModalHeader>Sign up</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalBody>
             <TextInputField
               type="text"
               name="username"
               label="Username"
               register={register}
-              registerOptions={{ required: "Required" }}
+              registerOptions={{ required: "Register your username" }}
               error={errors.username}
             />
             <TextInputField
@@ -58,30 +59,21 @@ export default function SignUpModal({ isOpen, onClose, onSignUpSuccesful }: Sign
               name="email"
               label="Email"
               register={register}
-              registerOptions={{ required: "Required" }}
+              registerOptions={{ required: "Register your email" }}
               error={errors.email}
             />
-
             <PasswordInputField
-              name="password"
-              label="Password"
               register={register}
-              registerOptions={{ required: "Required" }}
+              registerOptions={{ required: "Register your password" }}
               error={errors.password}
             />
-
-          </form>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            w="full"
-            colorScheme="blue"
-            type="submit"
-            disabled={isSubmitting}
-            onClick={handleSubmit(onSubmit)}>
-            Sign up
-          </Button>
-        </ModalFooter>
+          </ModalBody>
+          <ModalFooter>
+            <Button w="full" colorScheme="blue" type="submit" disabled={isSubmitting} onClick={handleSubmit(onSubmit)}>
+              Sign up
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
     </Modal>
   );

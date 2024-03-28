@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
-import { Note as NoteModel } from "./models/note";
-import PageLayout from "./components/PageLayout";
-import Note from "./components/Note";
 import { Button, Flex, Grid, Text, useDisclosure } from "@chakra-ui/react";
-import { deleteNote, fetchNotes } from "./network/notes_api";
+import { useEffect, useState } from "react";
 import AddEditNoteModal from "./components/AddEditNoteModal";
 import LoadingSpinner from "./components/LoadingSpinner";
-import SignUpModal from "./components/SignUpModal";
 import LoginModal from "./components/LoginModal";
 import Navbar from "./components/Navbar";
+import Note from "./components/Note";
+import PageLayout from "./components/PageLayout";
+import SignUpModal from "./components/SignUpModal";
+import { Note as NoteModel } from "./models/note";
+import { deleteNote, fetchNotes, getLoggedInUser } from "./network/notes_api";
+import { User } from "./models/user";
 
 export default function App() {
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [notesLoading, setNotesLoading] = useState(true);
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
@@ -18,6 +20,19 @@ export default function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: signUpModalIsOpen, onOpen: openSignUpModal, onClose: closeSignUpModal } = useDisclosure();
   const { isOpen: loginModalIsOpen, onOpen: openLoginModal, onClose: closeLoginModal } = useDisclosure();
+
+  useEffect(() => {
+    const fetchLoggedInUser = async () => {
+      try {
+        const user = await getLoggedInUser();
+        setLoggedInUser(user);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchLoggedInUser();
+  }, []);
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -56,7 +71,14 @@ export default function App() {
 
   return (
     <>
-      <Navbar loggedInUser={null} onSignUpClicked={openSignUpModal} onLoginClicked={openLoginModal} onLogoutSuccessful={() => {}} />
+      <Navbar
+        loggedInUser={loggedInUser}
+        onSignUpClicked={openSignUpModal}
+        onLoginClicked={openLoginModal}
+        onLogoutSuccessful={() => {
+          setLoggedInUser(null);
+        }}
+      />
       <PageLayout>
         <Flex justify="center">
           <Button
@@ -108,10 +130,24 @@ export default function App() {
           />
         )}
         {signUpModalIsOpen && (
-          <SignUpModal isOpen={signUpModalIsOpen} onClose={closeSignUpModal} onSignUpSuccesful={() => {}} />
+          <SignUpModal
+            isOpen={signUpModalIsOpen}
+            onClose={closeSignUpModal}
+            onSignUpSuccesful={(user) => {
+              setLoggedInUser(user);
+              closeSignUpModal();
+            }}
+          />
         )}
         {loginModalIsOpen && (
-          <LoginModal isOpen={loginModalIsOpen} onClose={closeLoginModal} onLoginSuccesful={() => {}} />
+          <LoginModal
+            isOpen={loginModalIsOpen}
+            onClose={closeLoginModal}
+            onLoginSuccesful={(user) => {
+              setLoggedInUser(user);
+              closeLoginModal();
+            }}
+          />
         )}
       </PageLayout>
     </>

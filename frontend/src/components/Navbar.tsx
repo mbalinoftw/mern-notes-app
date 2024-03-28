@@ -1,6 +1,6 @@
-import { Button, ButtonGroup, Container, Flex, Text } from "@chakra-ui/react";
-import React from "react";
+import { Box, Button, ButtonGroup, Container, Flex, Text } from "@chakra-ui/react";
 import { User } from "../models/user";
+import { logout } from "../network/notes_api";
 
 interface NavbarProps {
   loggedInUser: User | null;
@@ -11,7 +11,7 @@ interface NavbarProps {
 
 export default function Navbar({ loggedInUser, onSignUpClicked, onLoginClicked, onLogoutSuccessful }: NavbarProps) {
   return (
-    <nav className="">
+    <Box as="nav" bgColor="gray.100">
       <Container maxW="container.xl" p={4}>
         <Flex gap={6} align="center" justify="space-between">
           <Text>NotesApp</Text>
@@ -22,7 +22,7 @@ export default function Navbar({ loggedInUser, onSignUpClicked, onLoginClicked, 
           )}
         </Flex>
       </Container>
-    </nav>
+    </Box>
   );
 }
 
@@ -32,7 +32,7 @@ interface NavbarLoggedInViewProps {
 }
 
 function NavbarLoggedIn({ user, onLogoutSuccessful }: NavbarLoggedInViewProps) {
-  async function logout() {
+  async function logoutUser() {
     try {
       await logout();
       onLogoutSuccessful();
@@ -44,7 +44,7 @@ function NavbarLoggedIn({ user, onLogoutSuccessful }: NavbarLoggedInViewProps) {
   return (
     <div>
       <Text>Signed in as: {user.username}</Text>
-      <Button onClick={logout}>Log out</Button>
+      <Button onClick={logoutUser}>Log out</Button>
     </div>
   );
 }
