@@ -70,14 +70,7 @@ export default function AddEditNoteModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{noteToEdit ? "Edit note" : "Add note"}</ModalHeader>
-        <ModalCloseButton
-          onClick={() => {
-            if (setNoteToEdit && noteToEdit) {
-              setNoteToEdit(null);
-            }
-            onClose();
-          }}
-        />
+        <ModalCloseButton />
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextInputField
