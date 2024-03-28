@@ -17,6 +17,7 @@ import {
 import { Note } from "../models/note";
 import { useForm } from "react-hook-form";
 import { NoteInput, createNote, updateNote } from "../network/notes_api";
+import TextInputField from "./TextInputField";
 
 interface AddEditNoteModalProps {
   noteToEdit?: Note | null;
@@ -67,11 +68,14 @@ export default function AddEditNoteModal({
         <ModalCloseButton />
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={!!errors.title}>
-              <FormLabel>Title</FormLabel>
-              <Input type="text" {...register("title", { required: "Title is required" })} />
-              <FormErrorMessage color="red.500">{errors.title?.message}</FormErrorMessage>
-            </FormControl>
+            <TextInputField
+              type="text"
+              name="title"
+              label="Title"
+              register={register}
+              registerOptions={{ required: "Required" }}
+              error={errors.title}
+            />
             <FormControl>
               <FormLabel>Text</FormLabel>
               <Textarea placeholder="" size="sm" {...register("text")} />

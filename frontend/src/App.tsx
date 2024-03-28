@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { Note as NoteModel } from "./models/note";
 import PageLayout from "./components/PageLayout";
 import Note from "./components/Note";
-import { Button, Grid, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, Grid, Text, useDisclosure } from "@chakra-ui/react";
 import { deleteNote, fetchNotes } from "./network/notes_api";
 import AddEditNoteModal from "./components/AddEditNoteModal";
 import LoadingSpinner from "./components/LoadingSpinner";
+import SignUpModal from "./components/SignUpModal";
+import LoginModal from "./components/LogInModal";
 
 export default function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
@@ -13,6 +15,8 @@ export default function App() {
   const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: signUpModalIsOpen, onOpen: openSignUpModal, onClose: closeSignUpModal } = useDisclosure();
+  const { isOpen: loginModalIsOpen, onOpen: openLoginModal, onClose: closeLoginModal } = useDisclosure();
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -51,16 +55,31 @@ export default function App() {
 
   return (
     <PageLayout>
-      <Button
-        mb={6}
-        onClick={() => {
-          setNoteToEdit(null);
-          onOpen();
-        }}
-        mx="auto"
-        display="block">
-        Add new note
-      </Button>
+      <Flex gap={6} justify="center">
+        <Button
+          mb={6}
+          onClick={() => {
+            setNoteToEdit(null);
+            onOpen();
+          }}
+          display="block">
+          Add new note
+        </Button>
+        <Button
+          display="block"
+          onClick={() => {
+            openSignUpModal();
+          }}>
+          Sign up
+        </Button>
+        <Button
+          display="block"
+          onClick={() => {
+            openLoginModal();
+          }}>
+          Log in
+        </Button>
+      </Flex>
       {notesLoading && <LoadingSpinner />}
       {showNotesLoadingError && <Text>Something went wrong. Please refresh the page.</Text>}
 
@@ -99,6 +118,14 @@ export default function App() {
             onClose();
           }}
         />
+      )}
+
+      {signUpModalIsOpen && (
+        <SignUpModal isOpen={signUpModalIsOpen} onClose={closeSignUpModal} onSignUpSuccesful={() => {}} />
+      )}
+
+      {loginModalIsOpen && (
+        <LoginModal isOpen={loginModalIsOpen} onClose={closeLoginModal} onLoginSuccesful={() => {}}/>
       )}
     </PageLayout>
   );
