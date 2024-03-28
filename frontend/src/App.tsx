@@ -7,7 +7,7 @@ import { deleteNote, fetchNotes } from "./network/notes_api";
 import AddEditNoteModal from "./components/AddEditNoteModal";
 import LoadingSpinner from "./components/LoadingSpinner";
 import SignUpModal from "./components/SignUpModal";
-import LoginModal from "./components/LogInModal";
+import LoginModal from "./components/LoginModal";
 
 export default function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
