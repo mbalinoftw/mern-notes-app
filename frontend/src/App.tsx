@@ -8,6 +8,7 @@ import AddEditNoteModal from "./components/AddEditNoteModal";
 import LoadingSpinner from "./components/LoadingSpinner";
 import SignUpModal from "./components/SignUpModal";
 import LoginModal from "./components/LoginModal";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
@@ -54,79 +55,65 @@ export default function App() {
   );
 
   return (
-    <PageLayout>
-      <Flex gap={6} justify="center">
-        <Button
-          mb={6}
-          onClick={() => {
-            setNoteToEdit(null);
-            onOpen();
-          }}
-          display="block">
-          Add new note
-        </Button>
-        <Button
-          display="block"
-          onClick={() => {
-            openSignUpModal();
-          }}>
-          Sign up
-        </Button>
-        <Button
-          display="block"
-          onClick={() => {
-            openLoginModal();
-          }}>
-          Log in
-        </Button>
-      </Flex>
-      {notesLoading && <LoadingSpinner />}
-      {showNotesLoadingError && <Text>Something went wrong. Please refresh the page.</Text>}
-
-      {!notesLoading && !showNotesLoadingError && (
-        <>
-          {notes.length > 0 ? (
-            renderNotesGrid
-          ) : (
-            <Text fontSize="2xl" align="center">
-              You don't have any notes yet.
-            </Text>
-          )}
-        </>
-      )}
-
-      {isOpen && (
-        <AddEditNoteModal
-          isOpen={isOpen}
-          onClose={onClose}
-          onNoteSaved={(newNote) => {
-            setNotes([...notes, newNote]);
-            onClose();
-          }}
-        />
-      )}
-
-      {noteToEdit && (
-        <AddEditNoteModal
-          noteToEdit={noteToEdit}
-          setNoteToEdit={setNoteToEdit}
-          isOpen={isOpen}
-          onClose={onClose}
-          onNoteSaved={(updatedNote) => {
-            setNotes(notes.map((existingNote) => (existingNote._id === updatedNote._id ? updatedNote : existingNote)));
-            setNoteToEdit(null);
-            onClose();
-          }}
-        />
-      )}
-
-      {signUpModalIsOpen && (
-        <SignUpModal isOpen={signUpModalIsOpen} onClose={closeSignUpModal} onSignUpSuccesful={() => {}} />
-      )}
-
-      {loginModalIsOpen && (
-        <LoginModal isOpen={loginModalIsOpen} onClose={closeLoginModal} onLoginSuccesful={() => {}}/>
-      )}
-    </PageLayout>
+    <>
+      <Navbar loggedInUser={null} onSignUpClicked={openSignUpModal} onLoginClicked={openLoginModal} onLogoutSuccessful={() => {}} />
+      <PageLayout>
+        <Flex justify="center">
+          <Button
+            mb={6}
+            onClick={() => {
+              setNoteToEdit(null);
+              onOpen();
+            }}
+            display="block">
+            Add new note
+          </Button>
+        </Flex>
+        {notesLoading && <LoadingSpinner />}
+        {showNotesLoadingError && <Text>Something went wrong. Please refresh the page.</Text>}
+        {!notesLoading && !showNotesLoadingError && (
+          <>
+            {notes.length > 0 ? (
+              renderNotesGrid
+            ) : (
+              <Text fontSize="2xl" align="center">
+                You don't have any notes yet.
+              </Text>
+            )}
+          </>
+        )}
+        {isOpen && (
+          <AddEditNoteModal
+            isOpen={isOpen}
+            onClose={onClose}
+            onNoteSaved={(newNote) => {
+              setNotes([...notes, newNote]);
+              onClose();
+            }}
+          />
+        )}
+        {noteToEdit && (
+          <AddEditNoteModal
+            noteToEdit={noteToEdit}
+            setNoteToEdit={setNoteToEdit}
+            isOpen={isOpen}
+            onClose={onClose}
+            onNoteSaved={(updatedNote) => {
+              setNotes(
+                notes.map((existingNote) => (existingNote._id === updatedNote._id ? updatedNote : existingNote))
+              );
+              setNoteToEdit(null);
+              onClose();
+            }}
+          />
+        )}
+        {signUpModalIsOpen && (
+          <SignUpModal isOpen={signUpModalIsOpen} onClose={closeSignUpModal} onSignUpSuccesful={() => {}} />
+        )}
+        {loginModalIsOpen && (
+          <LoginModal isOpen={loginModalIsOpen} onClose={closeLoginModal} onLoginSuccesful={() => {}} />
+        )}
+      </PageLayout>
+    </>
   );
 }
