@@ -7,8 +7,6 @@ import {
   ModalOverlay,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  Input,
   Textarea,
   ModalFooter,
   Button,
@@ -61,11 +59,25 @@ export default function AddEditNoteModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        if (setNoteToEdit && noteToEdit) {
+          setNoteToEdit(null);
+        }
+        onClose();
+      }}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{noteToEdit ? "Edit note" : "Add note"}</ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton
+          onClick={() => {
+            if (setNoteToEdit && noteToEdit) {
+              setNoteToEdit(null);
+            }
+            onClose();
+          }}
+        />
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextInputField
