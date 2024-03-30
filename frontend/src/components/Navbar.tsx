@@ -42,10 +42,10 @@ function NavbarLoggedIn({ user, onLogoutSuccessful }: NavbarLoggedInViewProps) {
     }
   }
   return (
-    <div>
+    <Flex align="center" gap={2}>
       <Text>Signed in as: {user.username}</Text>
       <Button onClick={logoutUser}>Log out</Button>
-    </div>
+    </Flex>
   );
 }
 

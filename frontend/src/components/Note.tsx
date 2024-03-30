@@ -3,6 +3,7 @@ import { Note as NoteModel } from "../models/note";
 import {
   AlertDialog,
   AlertDialogBody,
+  AlertDialogCloseButton,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -32,7 +33,7 @@ interface NoteProps {
 export default function Note({ note, onEdit, onDelete, onOpen }: NoteProps) {
   const { title, text, createdAt, updatedAt } = note;
   const { isOpen: deleteWarningIsOpen, onOpen: openDeleteWarning, onClose: closeDeleteWarning } = useDisclosure();
-  const cancelRef = useRef<HTMLButtonElement>(null); 
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   let createdUpdatedText: string;
   if (updatedAt > createdAt) {
@@ -83,9 +84,11 @@ export default function Note({ note, onEdit, onDelete, onOpen }: NoteProps) {
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Delete Note
             </AlertDialogHeader>
-
-            <AlertDialogBody>Are you sure? You can't undo this action.</AlertDialogBody>
-
+            <AlertDialogCloseButton />
+            <AlertDialogBody>
+              {`Are you sure you want to delete "${note.title}"?`} <br />
+              You can't undo this action.
+            </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={closeDeleteWarning}>
                 Cancel
