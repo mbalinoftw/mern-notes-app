@@ -67,12 +67,21 @@ export default function Note({ note, onEdit, onDelete, onOpen }: NoteProps) {
                 isRound
                 aria-label="Edit note"
                 icon={<FaRegEdit />}
-                onClick={() => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
                   onEdit(note);
                   onOpen();
                 }}
               />
-              <IconButton isRound aria-label="Delete note" icon={<FaRegTrashCan />} onClick={openDeleteWarning} />
+              <IconButton
+                isRound
+                aria-label="Delete note"
+                icon={<FaRegTrashCan />}
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  openDeleteWarning();
+                }}
+              />
             </ButtonGroup>
           </Flex>
         </CardFooter>
