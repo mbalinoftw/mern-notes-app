@@ -1,6 +1,8 @@
-import { Box, Button, ButtonGroup, Container, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Container, Flex, HStack, Heading, Text } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { User } from "../models/user";
 import { logout } from "../network/notes_api";
+import { GiNotebook } from "react-icons/gi";
 
 interface NavbarProps {
   loggedInUser: User | null;
@@ -14,7 +16,12 @@ export default function Navbar({ loggedInUser, onSignUpClicked, onLoginClicked, 
     <Box as="nav" bgColor="gray.100">
       <Container maxW="container.xl" p={4}>
         <Flex gap={6} align="center" justify="space-between">
-          <Text>NotesApp</Text>
+          <Link to="/">
+            <HStack spacing={1}>
+              <GiNotebook size={28} />
+              <Heading size="lg">NotesApp</Heading>
+            </HStack>
+          </Link>
           {loggedInUser ? (
             <NavbarLoggedIn user={loggedInUser} onLogoutSuccessful={onLogoutSuccessful} />
           ) : (

@@ -1,6 +1,8 @@
 import { User } from "../models/user";
 import { useForm } from "react-hook-form";
 import {
+  Alert,
+  AlertIcon,
   Button,
   Modal,
   ModalBody,
@@ -13,6 +15,8 @@ import {
 import PasswordInputField from "./PasswordInputField";
 import TextInputField from "./TextInputField";
 import { LoginCredentials, login } from "../network/notes_api";
+import { useState } from "react";
+import { UnauthorizedError } from "../errors/http_errors";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -21,6 +25,7 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccesful }: LoginModalProps) {
+  const [errorText, setErrorText] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -31,7 +36,13 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccesful }: LoginM
     try {
       const user = await login(credentials);
       onLoginSuccesful(user);
+      setErrorText(null);
     } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        setErrorText(error.message);
+      } else {
+        alert(error);
+      }
       console.error(error);
     }
   }
@@ -40,7 +51,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccesful }: LoginM
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Sign up</ModalHeader>
+        <ModalHeader fontSize="2xl">Log in</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>
@@ -63,6 +74,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccesful }: LoginM
               Log in
             </Button>
           </ModalFooter>
+          {errorText && (
+            <Alert status="error">
+              <AlertIcon />
+              {errorText}
+            </Alert>
+          )}
         </form>
       </ModalContent>
     </Modal>

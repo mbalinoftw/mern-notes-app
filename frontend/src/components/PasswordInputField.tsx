@@ -25,9 +25,9 @@ export default function PasswordInputField({ register, registerOptions, error, .
 
   return (
     <FormControl isInvalid={!!error}>
-      <FormLabel>Password</FormLabel>
+      <FormLabel mb={1}>Password</FormLabel>
       <InputGroup>
-        <Input type={show ? "text" : "password"} {...register("password", registerOptions)} {...props} />
+        <Input mb={2} type={show ? "text" : "password"} {...register("password", registerOptions)} {...props} />
         <InputRightElement>
           <IconButton
             aria-label="show password"

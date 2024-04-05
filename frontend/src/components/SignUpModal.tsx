@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Button,
   Modal,
   ModalBody,
@@ -13,6 +15,8 @@ import { User } from "../models/user";
 import { SignUpCredentials, signUp } from "../network/notes_api";
 import PasswordInputField from "./PasswordInputField";
 import TextInputField from "./TextInputField";
+import { useState } from "react";
+import { ConflictError } from "../errors/http_errors";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -21,6 +25,7 @@ interface SignUpModalProps {
 }
 
 export default function SignUpModal({ isOpen, onClose, onSignUpSuccesful }: SignUpModalProps) {
+  const [errorText, setErrorText] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -30,11 +35,16 @@ export default function SignUpModal({ isOpen, onClose, onSignUpSuccesful }: Sign
   async function onSubmit(credentials: SignUpCredentials) {
     try {
       const newUser = await signUp(credentials);
+      setErrorText(null);
       onSignUpSuccesful(newUser);
       onClose();
     } catch (error) {
+      if (error instanceof ConflictError) {
+        setErrorText(error.message);
+      } else {
+        alert(error);
+      }
       console.error(error);
-      alert(error);
     }
   }
 
@@ -42,7 +52,7 @@ export default function SignUpModal({ isOpen, onClose, onSignUpSuccesful }: Sign
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Sign up</ModalHeader>
+        <ModalHeader fontSize="2xl">Sign up</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>
@@ -73,6 +83,12 @@ export default function SignUpModal({ isOpen, onClose, onSignUpSuccesful }: Sign
               Sign up
             </Button>
           </ModalFooter>
+          {errorText && (
+            <Alert status="error">
+              <AlertIcon />
+              {errorText}
+            </Alert>
+          )}
         </form>
       </ModalContent>
     </Modal>

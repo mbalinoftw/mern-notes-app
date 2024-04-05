@@ -6,6 +6,8 @@ import SignUpModal from "./components/SignUpModal";
 import { User } from "./models/user";
 import { getLoggedInUser } from "./network/notes_api";
 import NotesPage from "./pages/NotesPage";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -27,16 +29,21 @@ export default function App() {
 
   return (
     <>
-      <Navbar
-        loggedInUser={loggedInUser}
-        onSignUpClicked={openSignUpModal}
-        onLoginClicked={openLoginModal}
-        onLogoutSuccessful={() => {
-          setLoggedInUser(null);
-        }}
-      />
+      <BrowserRouter>
+        <Navbar
+          loggedInUser={loggedInUser}
+          onSignUpClicked={openSignUpModal}
+          onLoginClicked={openLoginModal}
+          onLogoutSuccessful={() => {
+            setLoggedInUser(null);
+          }}
+        />
 
-      <NotesPage loggedInUser={loggedInUser} />
+        <Routes>
+          <Route path="" element={<NotesPage loggedInUser={loggedInUser} />} />
+          <Route path="/*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
 
       {signUpModalIsOpen && (
         <SignUpModal

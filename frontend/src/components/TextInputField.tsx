@@ -24,8 +24,8 @@ export default function TextInputField({
 }: TextInputFieldProps) {
   return (
     <FormControl isInvalid={!!error}>
-      <FormLabel>{label}</FormLabel>
-      <Input type={type} {...register(name, registerOptions)} {...props} />
+      <FormLabel mb={1}>{label}</FormLabel>
+      <Input mb={2} type={type} {...register(name, registerOptions)} {...props} />
       <FormErrorMessage color="red.500">{error?.message}</FormErrorMessage>
     </FormControl>
   );

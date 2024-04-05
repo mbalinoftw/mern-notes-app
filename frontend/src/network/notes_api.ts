@@ -59,6 +59,11 @@ export async function fetchNotes(): Promise<Note[]> {
   return response.json();
 }
 
+export async function fetchNote(noteId: string): Promise<Note> {
+  const response = await fetchData(`/api/notes/${noteId}`, { method: "GET" });
+  return response.json();
+}
+
 export interface NoteInput {
   title: string;
   text?: string;
